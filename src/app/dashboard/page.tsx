@@ -1,10 +1,7 @@
 'use client';
 import React from 'react';
 
-import { useRouter } from 'next/navigation';
 const page = () => {
-  const { push } = useRouter();
-
   return (
     <div className="flex flex-row justify-center items-center h-screen w-full mr-6 gap-6">
       <div className="flex flex-col h-screen w-full items-center gap-4">
