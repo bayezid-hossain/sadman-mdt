@@ -49,8 +49,8 @@ const Profile = () => {
             <Image
               src={ProfilePic}
               alt="img/profile"
-              width={50}
-              height={50}
+              width={1000}
+              height={1000}
               className="object-cover h-full w-full"
             />
           </div>
