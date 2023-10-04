@@ -2,6 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import NavBar from './components/NavBar';
+import { StoreProvider } from './redux/StoreProvider';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,9 +19,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-slate-700 overflow-auto scroll-smooth scroll-hidden  ">
-        {children}
-      </body>
+      <StoreProvider>
+        <Toaster position="top-center" reverseOrder={false} />
+        <body className="bg-slate-700 overflow-auto scroll-smooth scroll-hidden  ">
+          {children}
+        </body>
+      </StoreProvider>
     </html>
   );
 }

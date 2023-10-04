@@ -1,25 +1,68 @@
 'use client';
 
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 import Image from 'next/image';
 import dmp from '../assets/dmp.png';
 import nouka from '../assets/nouka.png';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, selectUserState } from '../redux/AuthSlice';
+import toast from 'react-hot-toast';
+import { fetchProfiles } from '../redux/ProfileSlice';
+import { AppDispatch } from '../redux/Store';
 
 const Login = () => {
   const [email, setEmail] = useState('');
-  const [batchNo, setBatchNo] = useState('');
+  const [batch, setBatchNo] = useState('');
   const [password, setPassword] = useState('');
+
+  const dispatch = useDispatch<AppDispatch>();
   const { push } = useRouter();
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Perform login logic with email, batchNo, and password
-    console.log('Email:', email);
-    console.log('Batch No:', batchNo);
-    console.log('Password:', password);
+  const user = useSelector(selectUserState);
+  if (user.token && user.loggedIn) {
+    dispatch(fetchProfiles());
 
     push('/dashboard');
-    // You can send this data to an API or perform any other necessary action here
+  }
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Construct the login data
+    const loginData = {
+      email,
+      batch,
+      password,
+    };
+
+    try {
+      // Make a POST request to your login API endpoint
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (response.ok) {
+        // Successful login, redirect to the dashboard
+        const responseData = await response.json();
+        const token = responseData.token;
+
+        // Dispatch the login action with the retrieved token
+        dispatch(login({ token }));
+        console.log(response.json());
+
+        push('/dashboard');
+      } else {
+        // Handle authentication error (e.g., incorrect email or password)
+        console.error('Login failed');
+        toast('Invalid login credentials');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      console.error('Login error:', error);
+    }
   };
   return (
     <div className="flex flex-col items-center justify-center bg-slate-500 h-full w-full">
@@ -74,7 +117,7 @@ const Login = () => {
               id="batchNo"
               type="text"
               placeholder="Batch No"
-              value={batchNo}
+              value={batch}
               onChange={(e) => setBatchNo(e.target.value)}
               required
             />
