@@ -2,27 +2,80 @@
 
 import Incident from '@/app/components/Incident';
 import SearchComponent from '@/app/components/SearchComponent';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const page = () => {
-  const handleIncidentSearch = (searchTerm: string) => {
-    // Perform search logic with the search term
-    console.log(`Searching for: ${searchTerm}`);
-    // You can implement your search logic here
+// Define the IncidentData interface to match the expected data structure
+interface IncidentData {
+  id: string; // Replace with the actual type of 'id'
+  data: {
+    title: string;
+    typeOfIncident: string;
+    details: string;
+    civilians: []; // You should replace 'any[]' with the actual type for civilians
+    tags: []; // You should replace 'any[]' with the actual type for tags
+    images: string[]; // Assuming images are an array of strings (file paths)
+    officers: []; // You should replace 'any[]' with the actual type for officers
   };
+}
+
+const IncidentPage = () => {
+  // Define states for search term and filtered Incidents
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [filteredIncidents, setFilteredIncidents] = useState<IncidentData[]>(
+    []
+  );
+
+  // Dummy data for incidents (replace with your actual data)
+  const incidents: IncidentData[] = [
+    // Sample incidents here
+  ];
+
+  useEffect(() => {
+    // Filter incidents based on the search term
+    const filtered = incidents.filter((incident: IncidentData) =>
+      incident?.data?.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredIncidents(filtered);
+  }, [searchTerm]);
+
+  const handleIncidentSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+  };
+  const handleIncidentClick = (incident: IncidentData) => {
+    // Set the selected profile when clicked
+    // setSelectedProfile(profile);
+  };
+
   return (
     <div className="flex flex-row w-full h-screen min-h-min justify-evenly items-start gap-6 mr-6">
-      <div className="round-component ">
+      <div className="round-component">
         <div className="flex justify-center items-center gap-4">
           <h1 className="heading bg-white text-black ml-6 text-base">
             Incidents
           </h1>
-          <SearchComponent onSearch={handleIncidentSearch} />
+          <SearchComponent
+            onTextChange={handleIncidentSearch}
+            onSearch={handleIncidentSearch}
+          />
+        </div>
+        <div className="flex flex-col gap-4 overflow-auto h-[90%]">
+          {filteredIncidents?.map((incident) => (
+            <div
+              key={incident.id}
+              className="mx-4 bg-white w-[90%] flex justify-start h-20 gap-4 cursor-pointer"
+              onClick={() => handleIncidentClick(incident)}
+            >
+              {/* You can replace this with your actual incident data */}
+              <div className="flex flex-col gap-2 flex-1 justify-center items-start">
+                <p className="">{incident?.data?.title}</p>
+                <p className="">Type: {incident.data?.typeOfIncident}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-
       <div className="flex flex-col round-component overflow-auto h-screen">
-        <div className=" flex justify-evenly items-start gap-4">
+        <div className="flex justify-evenly items-start gap-4">
           <h1 className="heading ml-8">Manage Incident</h1>
           <button
             type="button"
@@ -37,57 +90,13 @@ const page = () => {
             New
           </button>
         </div>
-        <Incident />
+        {/* Pass selectedIncidentData to your Incident component */}
+        {/* <Incident passedIncidentData={selectedIncidentData} /> */}
       </div>
 
-      <div className="w-full h-full flex justify-evenly flex-col items-center gap-6">
-        <div className="round-component flex flex-col justify-start items-center">
-          <div className="flex justify-evenly w-[90%]">
-            <h1 className="heading">Tags</h1>
-            <button
-              type="button"
-              className="text-white text-2xl light-bg m-4 w-12"
-            >
-              +
-            </button>
-          </div>
-        </div>
-        <div className="round-component flex flex-col justify-start items-center">
-          <div className="flex justify-evenly w-[90%]">
-            <h1 className="heading">Gallery</h1>
-            <button
-              type="button"
-              className="text-white text-2xl light-bg m-4 w-12"
-            >
-              +
-            </button>
-          </div>
-        </div>
-        <div className="round-component flex flex-col justify-start items-center">
-          <div className="flex justify-evenly w-[90%]">
-            <h1 className="heading">Officers Involved</h1>
-            <button
-              type="button"
-              className="text-white text-2xl light-bg m-4 w-12"
-            >
-              +
-            </button>
-          </div>
-        </div>
-        <div className="round-component flex flex-col justify-start items-center">
-          <div className="flex justify-evenly w-[90%]">
-            <h1 className="heading">Civilians Involved</h1>
-            <button
-              type="button"
-              className="text-white text-2xl light-bg m-4 w-12"
-            >
-              +
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Other components and sections here */}
     </div>
   );
 };
 
-export default page;
+export default IncidentPage;

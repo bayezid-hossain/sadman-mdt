@@ -2,12 +2,10 @@
 
 import Profile from '@/app/components/Profile';
 import SearchComponent from '@/app/components/SearchComponent';
-import { selectUserState } from '@/app/redux/AuthSlice';
-import { fetchProfiles, selectProfiles } from '@/app/redux/ProfileSlice';
-import { AppDispatch } from '@/app/redux/Store';
+import { selectProfiles } from '@/app/redux/ProfileSlice';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ProfilePic from '../../assets/profile.png';
 import NewProfileModal from '@/app/components/NewProfileModal';
 interface ProfileData {
@@ -29,6 +27,7 @@ interface ProfileData {
 }
 const page = () => {
   const profiles = useSelector(selectProfiles);
+
   const [selectedProfile, setSelectedProfile] = useState<ProfileData>(
     profiles[0]
   );
@@ -52,11 +51,6 @@ const page = () => {
   const handleProfileClick = (profile: ProfileData) => {
     // Set the selected profile when clicked
     setSelectedProfile(profile);
-  };
-  const handleCreateProfile = (newProfileData: ProfileData) => {
-    // Add the new profile data to your profiles state
-    // You can dispatch an action to update the profiles in Redux here
-    // For example: dispatch(addProfile(newProfileData));
   };
 
   const openModal = () => {
